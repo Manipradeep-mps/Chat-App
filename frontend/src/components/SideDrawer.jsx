@@ -8,8 +8,8 @@ import MyProfile from './MyProfile'
 import { useNavigate } from 'react-router-dom'
 import ChatLoading from './ChatLoading'
 import UserListItem from './UserListItem'
-import { getSender } from '../chatLogic/chatLogics'
-import NotificationBadge, { Effect } from 'react-notification-badge'
+// import { getSender } from '../chatLogic/chatLogics'
+// import NotificationBadge, { Effect } from 'react-notification-badge'
 // import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 // import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'; 
 
@@ -151,7 +151,7 @@ function SideDrawer() {
               Chat-App
         </Text>
         <div>
-            <Menu>
+            {/* <Menu>
                 <MenuButton p={1}>
                   <NotificationBadge
                      count={notification.length}
@@ -174,7 +174,7 @@ function SideDrawer() {
                     </MenuItem>
                   ))}
                 </MenuList>
-            </Menu>
+            </Menu> */}
             <Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon/>}>
                     <Avatar size="sm" cursor="pointer" name={user.data.name} src={user.data.pic}/>
