@@ -4,7 +4,8 @@ import { Box, Button, MenuDescendantsProvider, Stack, useToast,Text} from '@chak
 import { AddIcon } from '@chakra-ui/icons'
 import ChatLoading from './ChatLoading'
 import { getSender } from '../chatLogic/chatLogics'
-function MyChats() {
+import GroupChatModel from './GroupChatModel'
+function MyChats({fetchAgain}) {
   const [loggedUser,setLoggedUser]=useState()
   const {user,selectedChat,setSelectedChat , chats,setChats} =ChatState()
 
@@ -40,12 +41,9 @@ function MyChats() {
   }
   
   useEffect(()=>{
-    setLoggedUser(localStorage.getItem("userInfo"))
-},[]) 
-  useEffect(()=>{
-       console.log(loggedUser)
-       fetchChats();
-  },[loggedUser]) 
+    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")))
+    fetchChats();
+},[fetchAgain]) 
 
   return (
     <Box
@@ -68,6 +66,8 @@ function MyChats() {
       alignItems="center"
     >
       My Chats
+
+      <GroupChatModel>
       <Button
         display="flex"
         fontSize={{ base: "17px", md: "10px", lg: "17px" }}
@@ -75,6 +75,7 @@ function MyChats() {
       >
         New Group Chat
       </Button>
+      </GroupChatModel>
     </Box>
     <Box
        display="flex"
@@ -86,13 +87,10 @@ function MyChats() {
        borderRadius="lg"
        overflow="hidden"
      >
-     {
-      
-     }
      {chats ? 
 
      (
-     <Stack overflow="scroll">
+     <Stack overflowY="scroll">
        {
           
           chats.map((chat)=>(
@@ -108,7 +106,7 @@ function MyChats() {
             >
               <Text>
                 {
-                !chat.isGroupChat ? chat.users[0]._id === loggedUser._id? chat.users[1].name : "Helo":chat.chatName
+                  loggedUser && !chat.isGroupChat ? getSender(loggedUser,chat.users): chat.chatName
                 }
                 </Text> 
             </Box>

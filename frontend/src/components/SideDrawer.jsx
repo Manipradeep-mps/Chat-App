@@ -1,4 +1,5 @@
 import { Box, Button, Tooltip ,Text, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider, Drawer, useDisclosure, DrawerOverlay, DrawerContent, DrawerHeader, DrawerBody, Input, Spinner} from '@chakra-ui/react'
+import { SearchIcon } from '@chakra-ui/icons'
 import { useToast } from '@chakra-ui/react'
 import {BellIcon, ChevronDownIcon} from '@chakra-ui/icons'
 import React, { useEffect, useState } from 'react'
@@ -7,6 +8,8 @@ import MyProfile from './MyProfile'
 import { useNavigate } from 'react-router-dom'
 import ChatLoading from './ChatLoading'
 import UserListItem from './UserListItem'
+import { getSender } from '../chatLogic/chatLogics'
+import NotificationBadge, { Effect } from 'react-notification-badge'
 // import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 // import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'; 
 
@@ -16,7 +19,7 @@ function SideDrawer() {
    
      const navigate=useNavigate()
 
-    const {user,setSelectedChat , chats,setChats} =ChatState()
+    const {user,setSelectedChat , chats,setChats,notification,setNotification} =ChatState()
 
     const[search,setSearch]=useState("")
     const[searchResult,setsearchResult]=useState([])
@@ -51,6 +54,7 @@ function SideDrawer() {
             }
          setSelectedChat(result);
           setLoadingChat(false);
+          onClose();
         })
         .catch(err=>{
           console.log(err)
@@ -133,6 +137,7 @@ function SideDrawer() {
      >
         <Tooltip label="Search users to Chat" hasArrow placement="bottom-end">
             <Button variant="ghost" onClick={onOpen}>
+            <SearchIcon/>
             {/* <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
             <FontAwesomeIcon icon={faMagnifyingGlass} /> */}
             <Text display={{base:"none",md:"flex"}} px="4">
@@ -148,8 +153,27 @@ function SideDrawer() {
         <div>
             <Menu>
                 <MenuButton p={1}>
-                  <BellIcon/>
+                  <NotificationBadge
+                     count={notification.length}
+                     effect={Effect.SCALE}
+                  />
+                  <BellIcon fontSize="2xl" m={1}/>
                 </MenuButton>
+                <MenuList pl={2}>
+                  {!notification.length && "No New Messages"}
+                  { notification.map( (notif)=>(
+                    <MenuItem
+                     key={notif._id}
+                     onClick={()=>{
+                      setSelectedChat(notif.chat)
+                      setNotification(notification.filter((n)=>n!==notif));
+                     }}
+                     >
+                      {notif.chat.isGroupChat?`New Message in ${notif.chat.chatName}`
+                      :`New Message from ${getSender(user,notif.chat.users)}`}
+                    </MenuItem>
+                  ))}
+                </MenuList>
             </Menu>
             <Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon/>}>
@@ -186,7 +210,7 @@ function SideDrawer() {
                     loading ? (
                      <ChatLoading/>
                     ):(
-                        searchResult?.map(user=>(
+                        searchResult.map(user=>(
                             <UserListItem
                             key={user._id}
                             user={user}

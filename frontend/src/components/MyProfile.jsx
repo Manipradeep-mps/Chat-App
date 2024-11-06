@@ -15,6 +15,8 @@ function MyProfile({user,children}) {
             />
         )
     }
+
+    
     <Modal size="sm" isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent h="350px">

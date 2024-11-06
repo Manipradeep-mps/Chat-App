@@ -7,13 +7,12 @@ import { ChatProvider, ChatState } from './context/chatProvider.jsx';
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
-   <ChatProvider>
   
+    <BrowserRouter>
+    <ChatProvider>
      <ChakraProvider>
     <App />
     </ChakraProvider>
-    
     </ChatProvider>
     </BrowserRouter>
 )

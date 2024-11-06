@@ -19,7 +19,7 @@ router.post('/accessChats',authenticate  ,async (req,res)=>{
         isGroupChat:false,
         $and:[
             {users : {$elemMatch : {$eq : req.user.id}}},
-            {users : {$elemMatch : {$eq : req.user.id}}}
+            {users : {$elemMatch : {$eq : userId}}}
         ]
      })
      .populate("users" ,"-password")
@@ -88,16 +88,15 @@ router.post('/createGroup',authenticate,async (req,res)=>{
         res.json("Please fill out all the fields")
         return;
     }
-
-    var users=JSON.parse(req.body.users) // to parse obj which is sent as JSON.stringify(obj)
-
+    let users=req.body.users// to parse obj which is sent as JSON.stringify(obj)
+   
     if(users.length < 2)
     {
        return  res.json("More than 2 users are required to create the Group")
     }
 
     users.push(req.user.id)
-    console.log(users)
+    
     try{
         
         const groupChat =await Chat.create({
@@ -126,7 +125,6 @@ router.post('/createGroup',authenticate,async (req,res)=>{
 
 router.put('/renameGroup',authenticate, async (req,res)=>{
     const {chatId , chatName} =req.body
-
     const updatedChat= await Chat.findByIdAndUpdate(
         chatId,
         {
